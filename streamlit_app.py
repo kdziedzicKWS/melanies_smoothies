@@ -13,13 +13,14 @@ st.write("The name on your smoothie will be:", name_on_order)
 
 cnx = st.connection("snowflake")
 session = cnx.session()
-my_dataframe = cnx.query("SELECT FRUIT_NAME FROM smoothies.public.fruit_options")
-fruit_list = my_dataframe["FRUIT_NAME"].tolist()
-#st.dataframe(data=my_dataframe, use_container_width=True)
+
+df = cnx.query("SELECT FRUIT_NAME FROM smoothies.public.fruit_options").to_pandas()
+fruit_list = df["FRUIT_NAME"].tolist()
+#st.dataframe(data=df, use_container_width=True)
 
 ingredient_list = st.multiselect(
     'Choose up to 5 ingredients:',
-    my_dataframe,
+    fruit_list,
     max_selections=5
 )
 
@@ -36,6 +37,7 @@ if ingredient_list:
 
     #st.write(my_insert_stmt)
     #st.stop()
+
     time_to_insert = st.button('Submit Order')
         
     if time_to_insert:
